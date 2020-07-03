@@ -14,8 +14,9 @@ canvas {
     border-radius: 25px;
 }
 .text{
-    color: #4E2A84;
-    opacity: 25%;
+    /* color: #4E2A84;
+   opacity: 55%; */
+   color: white;
     z-index: 2;
     
     
