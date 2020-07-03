@@ -1,4 +1,6 @@
-let canvas = document.getElementById('canvas'); // get acces to the canvas, specifically the 'context"
+//Define vars
+
+let canvas = document.getElementById('canvas'); // get access to the canvas, specifically the 'context"
 ctx = canvas.getContext('2d'); // Context is what is going on the Canvas
 let computerScore = 0;
 let playerScore = 0;
@@ -10,25 +12,78 @@ let xMin = 30;
 let xMax = 500;
 let yMin = 30;
 let yMax = 650;
-//let winningScore = 7;
-//let showingWinScreen = false;
-//let showingGameoverScreen = true;
-
+let pause = false;
 let mySoundFx = new Audio("./assets/puckSlideFx.mp3");
-mySoundFx.volume = 0.06;
-mySoundFx.play();
-
 let goalScoreFx = new Audio("./assets/goalSoundFX.mp3");
-goalScoreFx.volume = 0.05;
-goalScoreFx.play();
-
-
 let myAudio = new Audio("./assets/kidCudiMemories.mp3");
 let isPlaying = false;
+let player = {
+    height: 54,
+    width: 54,
+    x: canvas.height / 2 - 27,
+    y: canvas.width / 2 - 27,
+
+}
+let computer = {
+    height: 54,
+    width: 54,
+    x: canvas.height / 2 - 27,
+    y: canvas.width / 2 - 27,
+
+}
+let puck = {
+    height: 38,
+    width: 38,
+    x: canvas.height / 2 - 19,
+    y: canvas.width / 2 - 19,
+
+}
+let requestAnimationFrame = window.requestAnimationFrame 
+let delay = 0; // Change the Color at a slower rate than sixty times a second
+
+//Initialize vars
+
+puck.img = new Image();
+puck.img.src = './assets/redAirHockeyPuck.png';
+computer.img = new Image();
+computer.img.src = './assets/bostonBruins.png';
+
+player.img = new Image();
+player.img.src = './assets/nyIslanders.png';
+
+mySoundFx.volume = 0.06;
+mySoundFx.play();
+goalScoreFx.volume = 0.05;
+goalScoreFx.play();
 myAudio.volume = 0.03;
 myAudio.currentTime = 0;
 myAudio.loop = true;
 
+
+// add event listener which looks for mouse movement
+document.addEventListener("mousemove", mouseMoveHandler, false);
+//Start game
+setInterval(drawAll, 10); // calling a JavaScript library function which recalls another function every number of milliseconds(ms)
+
+
+
+
+//resets the scores to 0
+function reset() {
+    computerScore = 0;
+    playerScore = 0;
+}
+
+//toggles the pause functionality 
+function togglePause(){
+    if (pause == true) {
+        pause = false;
+    } else {
+        pause = true;
+    }
+}
+
+//toggles playing
 function togglePlay() {
     if (isPlaying) {
         myAudio.pause()
@@ -45,10 +100,6 @@ myAudio.onpause = function () {
     isPlaying = false;
 };
 
-
-
-// add event listener which looks for mouse movement
-document.addEventListener("mousemove", mouseMoveHandler, false);
 
 function drawBoard() {
     // Draw The Air Hockey Table // 
@@ -129,15 +180,7 @@ function drawCircle(x, y, r, w) {
 
 }
 
-let player = {
-    height: 54,
-    width: 54,
-    x: canvas.height / 2 - 27,
-    y: canvas.width / 2 - 27,
 
-}
-player.img = new Image();
-player.img.src = './assets/nyIslanders.png';
 
 // Draw Player Striker // 
 function drawPlayer(x, y) {
@@ -148,15 +191,7 @@ function drawPlayer(x, y) {
 
 }
 
-let computer = {
-    height: 54,
-    width: 54,
-    x: canvas.height / 2 - 27,
-    y: canvas.width / 2 - 27,
 
-}
-computer.img = new Image();
-computer.img.src = './assets/bostonBruins.png';
 
 // Draw Computer Striker // 
 function drawComputer(x, y) {
@@ -167,15 +202,7 @@ function drawComputer(x, y) {
 
 }
 
-let puck = {
-    height: 38,
-    width: 38,
-    x: canvas.height / 2 - 19,
-    y: canvas.width / 2 - 19,
 
-}
-puck.img = new Image();
-puck.img.src = './assets/redAirHockeyPuck.png';
 
 
 function drawPuck(x, y) {
@@ -224,7 +251,12 @@ function mouseMoveHandler(e) {
 
 }
 
+
+
 function drawAll() {
+    if (pause == true) {
+        return;
+    }
     //Assign audio to soundEfx
     //soundEfx = document.getElementById("soundEfx");
 
@@ -293,7 +325,7 @@ function drawAll() {
 
 
     }
-
+    let wasGoal = false;
     // condition to bounce the puck off the top-botom walls and goal logic
     if (puck2.x > 190 && puck2.x < 330) {
         if (puck2.y + ySpeed > canvas.height - 60) {
@@ -304,6 +336,7 @@ function drawAll() {
             ySpeed = 0;
             computerScore = computerScore + 1;
             goalScoreFx.play();
+            wasGoal = true;
 
         } else if (puck2.y + ySpeed < 30) {
             console.log("Player Goal");
@@ -313,6 +346,7 @@ function drawAll() {
             ySpeed = 0;
             playerScore = playerScore + 1;
             goalScoreFx.play();
+            wasGoal = true;
 
         }
     } else {
@@ -320,6 +354,23 @@ function drawAll() {
             ySpeed *= -1; // need to change this statement around
             //goalScoreFx.play();
 
+        }
+    }
+
+    if (wasGoal) {
+
+        console.log("Someone  scored");
+        canvas.style.backgroundColor = getRandomColor(); // Responsible for setting the background color on the Canvas to a Random Color
+        togglePause();
+        setTimeout(resetBackground, 1500);
+    }
+
+    if (playerScore == 7 || computerScore == 7) {
+        reset();
+        if ( playerScore == 7) {
+            alert("Well done player");
+        }else {
+            alert("You have been defeated");
         }
     }
 
@@ -381,22 +432,15 @@ function drawAll() {
 
 
 }
-setInterval(drawAll, 10); // calling a JavaScript library function which recalls another function every number of milliseconds(ms)
 
-
-// let requestAnimationFrame = window.requestAnimationFrame 
-
-
-let delay = 0; // Change the Color at a slower rate than sixty times a second
 
 function changeColor() {
     //console.log("Change color");
     delay++; // Change the Color at a slower rate than sixty times a second
 
-    if (delay > 30) { // Change the Color at a slower rate than sixty times a second
+    if (delay > 10) { // Change the Color at a slower rate than sixty times a second
 
-        //canvas.style.backgroundColor = getRandomColor(); // Responsible for setting the background color on the Canvas to a Random Color
-
+     
         delay = 7; // Change the Color at a slower rate than sixty times a second
     }
     requestAnimationFrame(changeColor); // requestAnimationFrame function that calls the changeColor function sixty times a second
@@ -405,8 +449,15 @@ function changeColor() {
 changeColor();
 
 
+function resetBackground() {
+    canvas.style.backgroundColor = "#f5f5f5";
+    togglePause();
+}
+
+
+
 function getRandomColor() { // Responsible for returning a random hex value for color:
-    //console.log("Random Color");
+    console.log("Random Color");
     // creating a random number between 0 and 255
     let r = Math.floor(Math.random() * 256);
     let g = Math.floor(Math.random() * 256);
@@ -440,15 +491,15 @@ function getRandomColor() { // Responsible for returning a random hex value for 
 
 
 //  THINGS LEFT TO DO  // 
-//1. Need a start and pause function.
-//2. Need game over and reset function when human or computer reaches score of 7.
-//3. Can we implement a button or start/pause function for strobe light effect or make it come on when a goal is scored or game over? 
-//4. CPU doesn't go after puck when puck is stuck going side to side.
+//1. Need a start and pause function. !.
+//2. Need game over and reset function when human or computer reaches score of 7. !. 
+//3. Can we implement a button or start/pause function for strobe light effect or make it come on when a goal is scored or game over? !/.
+//4. CPU doesn't go after puck when puck is stuck going side to side. <later>
 //5. Can we get the mouse pointer to stay on the Player puck object?
 //6. Cpu and Puck goes off screen and gets stuck.
-//7. Does any code need to be Rearranged to make it look better coding wise?
+//7. Does any code need to be Rearranged to make it look better coding wise? <yes>
 //8. Keep the code we need and get rid of what we don't. 
-//9. Does all that code need to be in the drawAll function or can we make another function?
+//9. Does all that code need to be in the drawAll function or can we make another function? yes all t
 //10. Need a thorough breakdown and explanation of the code.
 
 
