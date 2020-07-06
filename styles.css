@@ -1,24 +1,20 @@
-body{
-    background-image: url(https://ak.picdn.net/shutterstock/videos/1026039614/thumb/1.jpg);  
+body {
+    background-image: url(https://ak.picdn.net/shutterstock/videos/1026039614/thumb/1.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center; 
-    padding: 6%; 
+    background-position: center;
+    padding: 6%;
 }
-canvas { 
-    margin: 0px auto;  
-    margin-top: 10px; 
+#canvas {
+    margin: 0px auto;
+    margin-top: 10px;
     display: flex;
-    background-color: whitesmoke;
-    opacity: 60%; 
-    border-radius: 25px;
+    background-color: #fffafa;
+    opacity: 65%;
+    border-radius: 30px; 
 }
-.text{
-    /* color: #4E2A84;
-   opacity: 55%; */
-   color: white;
+.text {
+    color: #4E2A84;
+    opacity: 60%;
     z-index: 2;
-    
-    
 }
-
