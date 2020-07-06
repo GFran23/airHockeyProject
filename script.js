@@ -338,7 +338,7 @@ function drawAll() {
     if (puck2.x + xSpeed > canvas.width - 48 || puck2.x + xSpeed < +30) {
         xSpeed *= -1;
         sideWallFx.play();
-
+    
     }
     let wasGoal = false;
     // condition to bounce the puck off the top-botom walls and goal logic // 
