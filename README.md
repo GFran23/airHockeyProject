@@ -1,9 +1,9 @@
 # Air Hockey Game Project!
 
 ## Checklist:
-*[✅] Create an index.html
-*[✅] Create an styles.css
-*[✅] Create an script.js
+*[✅] Create index.html
+*[✅] Create styles.css
+*[✅] Create script.js
 *[✅] Create Assets Folder
 *[✅] Check HTML is working
 *[✅] Check CSS is working
