@@ -3,14 +3,15 @@ let canvas = document.getElementById('canvas'); // get access to the canvas, spe
 ctx = canvas.getContext('2d'); // Context is what is going on the Canvas
 let computerScore = 0;
 let playerScore = 0;
-let puckSpeed = 10;
+let puckSpeed = 11;
 let xSpeed = 0;
 let ySpeed = 0;
 let xMin = 30;
-let xMax = 500;
+let xMax = 425;
 let yMin = 30;
-let yMax = 650;
+let yMax = 525;
 let pause = false;
+let isPlaying = false;
 let playerFx = new Audio("./assets/strikerFx.mp3");
 let computerFx = new Audio("./assets/strikerFx.mp3");
 let topBottomWallFx = new Audio("./assets/topBottomWallFx.mp3");
@@ -19,11 +20,7 @@ let booFx = new Audio("./assets/booFx.mp3");
 let gameOverFx = new Audio("./assets/gameOverFx.mp3");
 let clapFx = new Audio("./assets/clapFx.mp3");
 let goalScoreFx = new Audio("./assets/goalSoundFX.mp3");
-let myAudio = new Audio(),
-i = 0;
-let playList = new Array("./assets/kidCudiMemories.mp3", "./assets/floRidaWildOnes.mp3", "./assets/taioCruz.mp3");
 
-let isPlaying = false;
 
 let player = {
     height: 54,
@@ -80,14 +77,40 @@ clapFx.play();
 goalScoreFx.volume = 0.07;
 goalScoreFx.play();
 
+// Striker Function //
+let Striker = function (x, y) {
+    // the value of "this" depends on how the function is called, in non-strict mode is always a reference to an object, in strict mode can be any value
+    this.x = x;
+    this.y = y - 10;
+
+}
+// Players Striker Object // 
+let pStriker = new Striker(235, canvas.height - 80);
+
+// Computer Striker Object //
+let cStriker = new Striker(235, 50);
+
+// Puck Class // 
+let Puck2 = function (x, y) {
+
+    this.x = x - 20;
+    this.y = y;
+
+}
+// Puck Object //
+let puck2 = new Puck2(canvas.width / 2, canvas.height - 270);
+
 // Function to loop through an array of audio files // 
+let myAudio = new Audio(),
+    i = 0;
+let playList = new Array("./assets/floRidaWildOnes.mp3", "./assets/kidCudiMemories.mp3", "./assets/taioCruz.mp3");
 myAudio.addEventListener('ended', function () {
     i = ++i < playList.length ? i : 0;
     console.log(i)
     myAudio.src = playList[i];
     myAudio.play();
-}, true);
-myAudio.volume = 0.03;
+});
+myAudio.volume = 0.02;
 myAudio.loop = false;
 myAudio.src = playList[0];
 myAudio.play();
@@ -228,38 +251,17 @@ function drawComputer(x, y) {
 // Draw Air Hockey Puck //
 function drawPuck(x, y) {
     ctx.beginPath(); // Begins a Path, or resets the current Path
-    ctx.drawImage(puck.img, x, y, puck.height, puck.width); //use this one!!
+    ctx.drawImage(puck.img, x, y, puck.height, puck.width);
     ctx.closePath(); // Creates a Path from the current point back to the starting point
 
 }
 
-// Striker Function //
-let Striker = function (x, y) {
-
-    this.x = x;
-    this.y = y - 10;
-
-}
-// Players Striker Object // 
-let pStriker = new Striker(235, canvas.height - 80);
-
-// Computer Striker Object //
-let cStriker = new Striker(260, 80);
-
-// Puck Class // 
-let Puck2 = function (x, y) {
-
-    this.x = x - 20;
-    this.y = y;
-
-}
-// Puck Object //
-let puck2 = new Puck2(canvas.width / 2, canvas.height - 370);
-
 // Function to control Striker with Mouse Pointer //
 function mouseMoveHandler(e) {
     console.log("Player Movement");
+    // The offsetLeft property returns the left position (in pixels) relative to the left side the offsetParent element
     let leftRightX = e.clientX - canvas.offsetLeft;
+    // The offsetTop property returns the top position (in pixels) relative to the top of the offsetParent element
     let upDownY = e.clientY - canvas.offsetTop;
 
     if (leftRightX > 30 && leftRightX < canvas.width - 85) { // Set Horizontal Movement For Human Player
@@ -291,10 +293,11 @@ function drawAll() {
 
     let computerDistance = distance(cStriker.x, cStriker.y, puck2.x, puck2.y);
 
-    function distance(x1, y1, x2, y2) { // Function for Puck Movement // 
+    // Function for Puck Movement //
+    function distance(x1, y1, x2, y2) {
         //console.log(Math.sqrt(tempx + tempy));
-        let tempX = x2 - x1;
-        let tempY = y2 - y1;
+        let tempX = x1 - x2;
+        let tempY = y1 - y2;
         tempX *= tempX;
         tempY *= tempY;
         return Math.sqrt(tempX + tempY);
@@ -331,14 +334,14 @@ function drawAll() {
     puck2.x += xSpeed;
     puck2.y += ySpeed;
 
-    xSpeed.x *= .99;
+    xSpeed *= .99;
     ySpeed *= .99;
 
     // condition to bounce the puck off the left-right walls // 
-    if (puck2.x + xSpeed > canvas.width - 48 || puck2.x + xSpeed < +30) {
+    if (puck2.x + xSpeed > canvas.width - 65 || puck2.x + xSpeed < 25) {
         xSpeed *= -1;
         sideWallFx.play();
-    
+
     }
     let wasGoal = false;
     // condition to bounce the puck off the top-botom walls and goal logic // 
@@ -376,7 +379,8 @@ function drawAll() {
     if (wasGoal) {
 
         console.log("Someone  scored");
-        canvas.style.backgroundColor = getRandomColor(); // Responsible for setting the background color on the Canvas to a Random Color when a score is made
+        // Responsible for setting the background color on the Canvas to a Random Color when a score is made // 
+        canvas.style.backgroundColor = getRandomColor();
         togglePause();
         setTimeout(resetBackground, 1500);
     }
@@ -400,7 +404,8 @@ function drawAll() {
     if (computerDifficulty) {
         computerReaction = 2; // If hard make number larger so computer player hits puck diagnolly
     }
-
+    // Logic for computer player to move towards the y coordinate //
+    // Returns aboslute value of a number //
     if ((Math.abs(xSpeed) + Math.abs(ySpeed)) < 10 && puck2.y <= canvas.height / 2) {
         if (puck2.y - 20 > cStriker.y) {
             cStriker.y += 2;
@@ -416,13 +421,13 @@ function drawAll() {
 
     // Make sure You or CPU doesn't go past the line or go off screen // 
     if (cStriker.x < xMin) {
-        cStriker.x = xMin, canvas.height, canvas.width + 10;
+        cStriker.x = xMin, canvas.height, canvas.width;
     }
     if (cStriker.x > xMax) {
-        cStriker.x = xMax, canvas.height, canvas.width + 10;
+        cStriker.x = xMax, canvas.height, canvas.width;
     }
     if (cStriker.y < yMin) {
-        cStriker.y = yMin, canvas.height, canvas.width + 20;
+        cStriker.y = yMin, canvas.height, canvas.width;
     }
     if (cStriker.y > yMax) {
         cStriker.y = yMax;

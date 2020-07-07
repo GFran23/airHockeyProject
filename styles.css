@@ -3,12 +3,12 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    padding: 6%;
+    padding: 4%;
 }
 #canvas {
     margin: 0px auto;
     margin-top: 10px;
-    display: flex;
+    display: block;
     background-color: #fffafa;
     opacity: 65%;
     border-radius: 30px; 
