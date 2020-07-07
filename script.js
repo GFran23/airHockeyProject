@@ -6,6 +6,7 @@ let playerScore = 0;
 let puckSpeed = 11;
 let xSpeed = 0;
 let ySpeed = 0;
+let dt = 1;
 let xMin = 30;
 let xMax = 425;
 let yMin = 30;
@@ -20,7 +21,6 @@ let booFx = new Audio("./assets/booFx.mp3");
 let gameOverFx = new Audio("./assets/gameOverFx.mp3");
 let clapFx = new Audio("./assets/clapFx.mp3");
 let goalScoreFx = new Audio("./assets/goalSoundFX.mp3");
-
 
 let player = {
     height: 54,
@@ -103,7 +103,7 @@ let puck2 = new Puck2(canvas.width / 2, canvas.height - 270);
 // Function to loop through an array of audio files // 
 let myAudio = new Audio(),
     i = 0;
-let playList = new Array("./assets/floRidaWildOnes.mp3", "./assets/kidCudiMemories.mp3", "./assets/taioCruz.mp3");
+let playList = new Array("./assets/benSound.mp3", "./assets/floRidaWildOnes.mp3", "./assets/kidCudiMemories.mp3", "./assets/taioCruz.mp3");
 myAudio.addEventListener('ended', function () {
     i = ++i < playList.length ? i : 0;
     console.log(i)
@@ -295,7 +295,7 @@ function drawAll() {
 
     // Function for Puck Movement //
     function distance(x1, y1, x2, y2) {
-        //console.log(Math.sqrt(tempx + tempy));
+
         let tempX = x1 - x2;
         let tempY = y1 - y2;
         tempX *= tempX;
@@ -331,8 +331,8 @@ function drawAll() {
     }
 
     // Adjustments to the X and Y coordinate of the Puck Movement // 
-    puck2.x += xSpeed;
-    puck2.y += ySpeed;
+    puck2.x += xSpeed * dt;
+    puck2.y += ySpeed * dt;
 
     xSpeed *= .99;
     ySpeed *= .99;

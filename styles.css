@@ -5,14 +5,16 @@ body {
     background-position: center;
     padding: 4%;
 }
+
 #canvas {
     margin: 0px auto;
     margin-top: 10px;
     display: block;
     background-color: #fffafa;
     opacity: 65%;
-    border-radius: 30px; 
+    border-radius: 30px;
 }
+
 .text {
     color: #4E2A84;
     opacity: 60%;
